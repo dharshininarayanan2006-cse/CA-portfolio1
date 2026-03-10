@@ -1,0 +1,495 @@
+@import "tailwindcss";
+
+/* Class-based dark mode for Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-primary: #33354a;
+  --color-primary-light: #4a4c66;
+  --color-peach: #ffe1d5;
+  --color-soft-blue: #d5edff;
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-muted: #6b7280;
+  --color-card: #ffffff;
+  --color-card-border: #e2e8f0;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Dark body overrides */
+  .dark body {
+    background: #0f172a;
+    color: #f1f5f9;
+  }
+}
+
+/* Scrollbar — light */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f9fafb;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #33354a;
+  border-radius: 3px;
+}
+
+/* Scrollbar — dark */
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #64748b;
+}
+
+/* ═══════════════════════════════════════
+   KEYFRAMES
+   ═══════════════════════════════════════ */
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes blobPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 0.5;
+  }
+}
+
+@keyframes heroWordReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) rotateX(30deg);
+    filter: blur(4px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes clipCircle {
+  0% {
+    clip-path: circle(0% at 50% 50%);
+  }
+
+  100% {
+    clip-path: circle(100% at 50% 50%);
+  }
+}
+
+@keyframes clipWipe {
+  0% {
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+
+  100% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+@keyframes subtleRotateIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-8deg) scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+/* ═══════════════════════════════════════
+   UTILITIES — always-on animations
+   ═══════════════════════════════════════ */
+
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-blob-pulse {
+    animation: blobPulse 5s ease-in-out infinite;
+  }
+
+  /* ─── Shared transition base ────────── */
+  .scroll-animate {
+    will-change: opacity, transform, filter;
+    transition:
+      opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+      clip-path 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ─── Reveal Up ────────────────────── */
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+
+  .reveal-up.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── Reveal Left ──────────────────── */
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-48px);
+  }
+
+  .reveal-left.in-view {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ─── Reveal Right ─────────────────── */
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+
+  .reveal-right.in-view {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ─── Reveal Scale ─────────────────── */
+  .reveal-scale {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+
+  .reveal-scale.in-view {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ─── Reveal Blur-in ───────────────── */
+  .reveal-blur {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(12px);
+  }
+
+  .reveal-blur.in-view {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+
+  /* ─── Clip-path Circle Reveal ──────── */
+  .reveal-clip-circle {
+    clip-path: circle(0% at 50% 50%);
+  }
+
+  .reveal-clip-circle.in-view {
+    clip-path: circle(100% at 50% 50%);
+  }
+
+  /* ─── Clip-path Wipe Reveal ────────── */
+  .reveal-clip-wipe {
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+
+  .reveal-clip-wipe.in-view {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  /* ─── Rotate In (for icons) ────────── */
+  .reveal-rotate {
+    opacity: 0;
+    transform: rotate(-8deg) scale(0.9);
+  }
+
+  .reveal-rotate.in-view {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+
+  /* ─── Hero Word Animation ──────────── */
+  .hero-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(18px) rotateX(30deg);
+    filter: blur(4px);
+    margin-right: 0.3em;
+  }
+
+  .hero-word.in-view {
+    animation: heroWordReveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* ─── Stagger delays ───────────────── */
+  .stagger-1 {
+    transition-delay: 80ms;
+  }
+
+  .stagger-2 {
+    transition-delay: 160ms;
+  }
+
+  .stagger-3 {
+    transition-delay: 240ms;
+  }
+
+  .stagger-4 {
+    transition-delay: 320ms;
+  }
+
+  .stagger-5 {
+    transition-delay: 400ms;
+  }
+
+  .stagger-6 {
+    transition-delay: 480ms;
+  }
+
+  .stagger-7 {
+    transition-delay: 560ms;
+  }
+
+  .stagger-8 {
+    transition-delay: 640ms;
+  }
+
+  /* Hero word stagger (animation-delay for keyframe animations) */
+  .word-delay-1 {
+    animation-delay: 0.06s;
+  }
+
+  .word-delay-2 {
+    animation-delay: 0.12s;
+  }
+
+  .word-delay-3 {
+    animation-delay: 0.18s;
+  }
+
+  .word-delay-4 {
+    animation-delay: 0.24s;
+  }
+
+  .word-delay-5 {
+    animation-delay: 0.30s;
+  }
+
+  .word-delay-6 {
+    animation-delay: 0.36s;
+  }
+
+  .word-delay-7 {
+    animation-delay: 0.42s;
+  }
+
+  .word-delay-8 {
+    animation-delay: 0.48s;
+  }
+
+  /* ── Legacy compat (old reveal class) ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .reveal.visible,
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — tone down on mobile
+   ═══════════════════════════════════════ */
+
+/* Small screens: reduce travel distances & durations */
+@media (max-width: 640px) {
+  .reveal-up {
+    transform: translateY(20px);
+  }
+
+  /* On narrow screens, swap horizontal slides to vertical to prevent clipping */
+  .reveal-left {
+    transform: translateX(0) translateY(20px);
+  }
+
+  .reveal-right {
+    transform: translateX(0) translateY(20px);
+  }
+
+  /* No blur on mobile — headings must always be readable */
+  .reveal-blur,
+  .reveal-blur.in-view {
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .reveal-scale {
+    transform: scale(0.95);
+  }
+
+  .hero-word {
+    transform: translateY(8px);
+    filter: none;
+  }
+
+  .scroll-animate {
+    transition-duration: 0.5s;
+  }
+
+  /* Reduce stagger gaps on mobile for snappier feel */
+  .stagger-1 {
+    transition-delay: 50ms;
+  }
+
+  .stagger-2 {
+    transition-delay: 100ms;
+  }
+
+  .stagger-3 {
+    transition-delay: 150ms;
+  }
+
+  .stagger-4 {
+    transition-delay: 200ms;
+  }
+
+  .stagger-5 {
+    transition-delay: 250ms;
+  }
+
+  .stagger-6 {
+    transition-delay: 300ms;
+  }
+
+  .stagger-7 {
+    transition-delay: 350ms;
+  }
+
+  .stagger-8 {
+    transition-delay: 400ms;
+  }
+
+  .word-delay-1 {
+    animation-delay: 0.04s;
+  }
+
+  .word-delay-2 {
+    animation-delay: 0.08s;
+  }
+
+  .word-delay-3 {
+    animation-delay: 0.12s;
+  }
+
+  .word-delay-4 {
+    animation-delay: 0.16s;
+  }
+
+  .word-delay-5 {
+    animation-delay: 0.20s;
+  }
+
+  .word-delay-6 {
+    animation-delay: 0.24s;
+  }
+
+  .word-delay-7 {
+    animation-delay: 0.28s;
+  }
+
+  .word-delay-8 {
+    animation-delay: 0.32s;
+  }
+}
+
+/* Medium screens: slightly reduce distances */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .reveal-up {
+    transform: translateY(28px);
+  }
+
+  .reveal-left {
+    transform: translateX(-36px);
+  }
+
+  .reveal-right {
+    transform: translateX(36px);
+  }
+
+  .scroll-animate {
+    transition-duration: 0.65s;
+  }
+}
+
+/* Prefer reduced motion — respect accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+  .scroll-animate,
+  .reveal,
+  .reveal-up,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale,
+  .reveal-blur,
+  .reveal-clip-circle,
+  .reveal-clip-wipe,
+  .reveal-rotate,
+  .hero-word {
+    transition: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+
+  .animate-float,
+  .animate-blob-pulse {
+    animation: none !important;
+  }
+}
