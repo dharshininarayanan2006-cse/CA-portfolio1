@@ -7,11 +7,41 @@ import { useState } from "react";
 
 export default function ContactPage() {
     const [submitted, setSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
     const { addReveal } = useScrollAnimations();
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setSubmitted(true);
+        setIsLoading(true);
+        setError("");
+
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            name: formData.get("name"),
+            email: formData.get("email"),
+            phone: formData.get("phone"),
+            message: formData.get("message"),
+        };
+
+        try {
+            const response = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                const resData = await response.json();
+                throw new Error(resData.error || "Failed to send message");
+            }
+
+            setSubmitted(true);
+        } catch (err: any) {
+            setError(err.message || "An error occurred. Please try again later.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -185,11 +215,15 @@ export default function ContactPage() {
 
                                         <button
                                             type="submit"
+                                            disabled={isLoading}
                                             id="contact-submit"
-                                            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary text-white hover:bg-primary/90 dark:bg-peach dark:text-primary dark:hover:bg-peach/90 px-6 py-3 text-sm font-semibold shadow-sm transition-all duration-200 sm:w-auto"
+                                            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary text-white hover:bg-primary/90 dark:bg-peach dark:text-primary dark:hover:bg-peach/90 px-6 py-3 text-sm font-semibold shadow-sm transition-all duration-200 sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
                                         >
-                                            <Send size={16} /> Send Message
+                                            <Send size={16} /> {isLoading ? "Sending..." : "Send Message"}
                                         </button>
+                                        {error && (
+                                            <p className="text-red-500 text-sm mt-2">{error}</p>
+                                        )}
                                     </form>
                                 )}
                             </div>
